@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import UserNotifications
 
 class ViewController: UIViewController, TimerDelegate {
     
@@ -14,6 +15,7 @@ class ViewController: UIViewController, TimerDelegate {
     @IBOutlet weak var startButton: UIButton!
     
     let myTimer = MyTimer()
+    fileprivate let userNotificationIdentifier = "timerNotificatoin"
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -40,8 +42,10 @@ class ViewController: UIViewController, TimerDelegate {
     @IBAction func startButtonTapped(_ sender: Any) {
         if myTimer.isOn {
             myTimer.stopTimer()
+            cancelLocalNotification()
         } else {
             myTimer.startTimer(10)
+            scheduleLocalNotification()
         }
         setView()
     }
@@ -81,6 +85,7 @@ class ViewController: UIViewController, TimerDelegate {
         let snoozeAction = UIAlertAction(title: "Snooze", style: .default) { (_) in
             guard let timeText = snoozeTextField?.text, let time = TimeInterval(timeText) else { return }
             self.myTimer.startTimer(time * 60)
+            self.scheduleLocalNotification()
             self.setView()
         }
         
@@ -90,6 +95,32 @@ class ViewController: UIViewController, TimerDelegate {
         
         // Present Alert Controller
         present(alertController, animated: true, completion: nil)
+    }
+    
+    //MARK: - UserNotifications
+    
+    func scheduleLocalNotification() {
+        
+        let notificationContent = UNMutableNotificationContent()
+        notificationContent.title = "Wake up!"
+        notificationContent.body = "Time to get up"
+        
+        guard let timeRemaining = myTimer.timeRemaining else { return }
+        
+        let fireDate = Date(timeInterval: timeRemaining, since: Date())
+        let dateComponenets = Calendar.current.dateComponents([.minute, .second], from: fireDate)
+        let dateTrigger = UNCalendarNotificationTrigger(dateMatching: dateComponenets, repeats: false)
+        let request = UNNotificationRequest(identifier: userNotificationIdentifier, content: notificationContent, trigger: dateTrigger)
+        UNUserNotificationCenter.current().add(request) { (error) in
+            if let error = error {
+                NSLog("Unable to add notification request. \(error.localizedDescription)")
+            }
+        }
+    }
+    
+    func cancelLocalNotification() {
+        
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [userNotificationIdentifier])
     }
 }
 
