@@ -24,7 +24,7 @@ class MyTimer: NSObject {
     }
     
     func timeAsString() -> String {
-        let timeRemaining = Int(self.timeRemaining ?? 20*60)
+        let timeRemaining = Int(self.timeRemaining ?? 5)
         let minutesLeft = timeRemaining / 60
         let secondsLeft = timeRemaining - (minutesLeft*60)
         return String(format: "%02d : %02d", arguments: [minutesLeft, secondsLeft])

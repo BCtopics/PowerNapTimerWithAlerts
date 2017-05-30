@@ -63,16 +63,25 @@ class ViewController: UIViewController, TimerDelegate {
     }
     
     // MARK: - AlertController
-    
+
     func presentIsCompletedAlert() {
         
+        var snoozeTextField: UITextField?
         // Create The Alert Controller
         let alertController = UIAlertController(title: "Nap is over man!", message: "Get out of bed!", preferredStyle: .alert)
+        
+        alertController.addTextField { (textField) in
+            snoozeTextField = textField
+            snoozeTextField?.placeholder = "How many more minuets?"
+            snoozeTextField?.keyboardType = .numberPad
+        }
         
         // Create Actions
         let dismissAction = UIAlertAction(title: "Dismiss", style: .cancel, handler: nil)
         let snoozeAction = UIAlertAction(title: "Snooze", style: .default) { (_) in
-            //
+            guard let timeText = snoozeTextField?.text, let time = TimeInterval(timeText) else { return }
+            self.myTimer.startTimer(time * 60)
+            self.setView()
         }
         
         // Add Action
@@ -83,6 +92,8 @@ class ViewController: UIViewController, TimerDelegate {
         present(alertController, animated: true, completion: nil)
     }
 }
+
+
 
 
 
