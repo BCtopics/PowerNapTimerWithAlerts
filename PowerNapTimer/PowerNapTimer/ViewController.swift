@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, TimerDelegate {
     
     @IBOutlet weak var timerLabel: UILabel!
     @IBOutlet weak var startButton: UIButton!
@@ -17,6 +17,9 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        myTimer.delegate = self
+        
         setView()
     }
     
@@ -42,5 +45,19 @@ class ViewController: UIViewController {
         }
         setView()
     }
+    
+    func timerStopped() {
+        setView()
+    }
+    
+    func timerCompleted() {
+        setView()
+        // Present Alert Controller
+    }
+    
+    func timerSecondtick() {
+        updateTimerLabel()
+    }
+    
 }
 
