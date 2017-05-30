@@ -41,23 +41,58 @@ class ViewController: UIViewController, TimerDelegate {
         if myTimer.isOn {
             myTimer.stopTimer()
         } else {
-            myTimer.startTimer(20*60.0)
+            myTimer.startTimer(10)
         }
         setView()
     }
     
+    // MARK: - TimerDelegate Functions
+    
     func timerStopped() {
         setView()
+        myTimer.timer?.invalidate()
     }
     
     func timerCompleted() {
         setView()
-        // Present Alert Controller
+        presentIsCompletedAlert()
     }
     
     func timerSecondtick() {
         updateTimerLabel()
     }
     
+    // MARK: - AlertController
+    
+    func presentIsCompletedAlert() {
+        
+        // Create The Alert Controller
+        let alertController = UIAlertController(title: "Nap is over man!", message: "Get out of bed!", preferredStyle: .alert)
+        
+        // Create Actions
+        let dismissAction = UIAlertAction(title: "Dismiss", style: .cancel, handler: nil)
+        let snoozeAction = UIAlertAction(title: "Snooze", style: .default) { (_) in
+            //
+        }
+        
+        // Add Action
+        alertController.addAction(dismissAction)
+        alertController.addAction(snoozeAction)
+        
+        // Present Alert Controller
+        present(alertController, animated: true, completion: nil)
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
